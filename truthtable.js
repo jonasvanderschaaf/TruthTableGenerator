@@ -98,9 +98,15 @@ function latexchar(c,tv) {
 // main construction function
 function construct() {
 	var formulas = document.getElementById('in').value.replace(/ /g,'');// remove whitespace
-	if(formulas=='') {return };
+	if(formulas=='') {
+		document.getElementById('tt').innerHTML = "Your formula is empty."
+		return
+	};
 	var r = badchar(formulas);
-	if(r>=0) {return};
+	if(r>=0) {
+		document.getElementById('tt').innerHTML = "One or more characters in your formula are invalid."
+		return
+	};
 
 	var full = document.getElementById('full').checked;
 	var main = document.getElementById('main').checked;
@@ -118,6 +124,7 @@ function construct() {
 		}
 	}
 	if(trees.filter(function(a) {return a.length==0;}).length>0) { // checks if any formulas are still malformed
+		document.getElementById('tt').innerHTML = "Your formula is not structured correctly."
 		return
 	}
 
