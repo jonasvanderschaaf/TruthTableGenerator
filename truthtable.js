@@ -1,19 +1,19 @@
 // Truth Table Generator
-// 
+//
 // The MIT License (MIT)
-// 
+//
 // Copyright (c) 2014-2017 Michael Rieppel
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -37,7 +37,7 @@ function htmlchar(c,tv) {
 					case 'tf': return 'F';
 					case 'oz': return '0';
 			}
-			
+
 		case '~' : return '~';
 		case '&' : return '&amp;';
 		case 'v' : return '&or;';
@@ -46,7 +46,7 @@ function htmlchar(c,tv) {
 		case '|' : return '|';
 		case '#' : return '&perp;'
 		default : return c;
-	}	
+	}
 }
 
 function txtchar(c,tv) {
@@ -90,7 +90,7 @@ function latexchar(c,tv) {
 		case '|' : return '$|$';
 		case '#' : return '$\\perp$';
 		default : return c;
-	}	
+	}
 }
 
 /*************************************************************************************/
@@ -98,17 +98,17 @@ function latexchar(c,tv) {
 // main construction function
 function construct() {
 	var formulas = document.getElementById('in').value.replace(/ /g,'');// remove whitespace
-	if(formulas=='') {return alert("You have to enter a formula.");};
+	if(formulas=='') {return };
 	var r = badchar(formulas);
-	if(r>=0) {return alert("The string you entered contains the following unrecognized symbol: "+formulas[r]);};
-	
+	if(r>=0) {return};
+
 	var full = document.getElementById('full').checked;
 	var main = document.getElementById('main').checked;
 	var text = document.getElementById('text').checked;
 	var latex = document.getElementById('latex').checked;
-	
+
 	var tv = document.querySelector('input[name="tvstyle"]:checked').value;
-	
+
 	formulas = formulas.split(','); // create an array of formulas
 	var trees = formulas.map(parse); // create an array of parse trees
 	for(var i=0;i<trees.length;i++) { // adds outermost parentheses if needed
@@ -118,11 +118,11 @@ function construct() {
 		}
 	}
 	if(trees.filter(function(a) {return a.length==0;}).length>0) { // checks if any formulas are still malformed
-		return alert("One of the formulas you entered is not well formed");
+		return
 	}
-	
+
 	var table = mkTable(formulas,trees);
-	
+
 	if(full || main) {
 		var htmltable = htmlTable(table,trees,main,tv);
 		document.getElementById('tt').innerHTML = htmltable;
@@ -139,7 +139,7 @@ function construct() {
 
 // (Table,[Tree],Boolean) -> String
 // Takes a table (as output by mkTable), the trees it's a table of, and a boolean and
-// returns an HTML table. If the boolean is set to true, it only prints the column 
+// returns an HTML table. If the boolean is set to true, it only prints the column
 // under the main connective.
 function htmlTable(table,trees,flag,tv) {
 	var rownum = table[0].length;
@@ -153,7 +153,7 @@ function htmlTable(table,trees,flag,tv) {
 		out += mkTDrow(table,i);
 	}
 	return out+'</table>'; // return the html table
-	
+
 	function mkTHrow(tbl) {
 		var rw = '<tr>';
 		for(var i=0;i<tbl.length;i++) { // i = table segment
@@ -167,7 +167,7 @@ function htmlTable(table,trees,flag,tv) {
 		}
 		return rw+'</tr>';
 	}
-	
+
 	function mkTDrow(tbl,r) {
 		var rw = '<tr>';
 		for(var i=0;i<tbl.length;i++) { // i = table segment
@@ -200,10 +200,10 @@ function textTable(table,tv) {
 	out += mkrow(table,0); // make top row
 	out += '\r\n'+out.replace(/./g,'-')+'\r\n'; // put a string of '-' beneath the top row
 	for(var i=1;i<table[0].length;i++) { // make remaining rows
-		out += mkrow(table,i)+'\r\n';	
+		out += mkrow(table,i)+'\r\n';
 	}
 	return out;
-	
+
 	function mkrow(tbl,r) { // makes a table row
 		var rw = '';
 		for(var i=0;i<tbl.length;i++) { // i = table segment
@@ -219,7 +219,7 @@ function textTable(table,tv) {
 		var bc = [];
 		a.map(function(e,i) {if(e=='<>') {bc.push(i);};});
 		return bc;
-	}	
+	}
 }
 
 
@@ -239,7 +239,7 @@ function latexTable(table,trees,tv) {
 	out += mkrow(table,0); // make top row
 	out += '\\\\\r\n\\hline \r\n'; //
 	for(var i=1;i<table[0].length;i++) { // make remaining rows
-		out += mkrow(table,i)+'\\\\\r\n';	
+		out += mkrow(table,i)+'\\\\\r\n';
 	}
 	var begintable = '\%NOTE: requires \\usepackage{color}\r\n\\begin{tabular}{';
 	for(var i=0;i<colnum;i++) {
@@ -253,13 +253,13 @@ function latexTable(table,trees,tv) {
 			begintable += parloc.indexOf(i)>=0 ? '@{}c@{}' : '@{ }c@{ }';
 		}
 	}
-	
+
 	return begintable+'}\r\n'+out+'\\end{tabular}';
-	
+
 	function mkrow(tbl,r) { // makes a table row
 		dividers = [];
 		colnum = 0;
-		
+
 		var rw = '';
 		for(var i=0;i<tbl.length;i++) { // i = table segment
 			for(var j=0;j<tbl[i][r].length;j++) { // r = row, j = cell
@@ -302,7 +302,7 @@ function countleaves(t) {
 }
 
 // ([String],[Tree]) -> Table
-// Takes an array of formulas and their parse trees and returns a truth table as a 
+// Takes an array of formulas and their parse trees and returns a truth table as a
 // multidimensional array.  For n formulas, the array contains n+1 elements.  The first
 // element is the lhs of the table, and the succeeding elements are the table segments
 // for each passed formula.
@@ -333,8 +333,8 @@ function mklhs(fs) {
 }
 
 // (String, Tree, LHSTable) -> TableSegment
-// Takes a tree, the formula it's a tree of, and a LHSTable, and returns a TableSegment 
-// for the formula 
+// Takes a tree, the formula it's a tree of, and a LHSTable, and returns a TableSegment
+// for the formula
 function mktseg(f,t,lhs) {
 	var tbrows=[];
 	for(var i=1;i<lhs.length;i++) {
@@ -353,7 +353,7 @@ function mktseg(f,t,lhs) {
 }
 
 // String -> [Char]
-// Takes a wff and returns an array with all the atomic sentences in the wff.  The 
+// Takes a wff and returns an array with all the atomic sentences in the wff.  The
 // array has duplicates removed and is sorted in alphabetical order.
 function getatomic(s) {
 	var out = [];
@@ -384,7 +384,7 @@ function mkAss(s,b) {
 	return a;
 }
 
-// Tree -> Array 
+// Tree -> Array
 // Takes an evaluated tree and turns it into a one dimensional array
 function flatten(t) {
 	if(t.length==5) {
@@ -397,7 +397,7 @@ function flatten(t) {
 }
 
 // (Tree,Assignment) -> Tree
-// Takes a tree and an assignment of booleans to atomic sentences and returns an 
+// Takes a tree and an assignment of booleans to atomic sentences and returns an
 // evaluated tree (i.e. with all atomic sentences and connectives replaced by booleans).
 function evlTree(t,a) {
 	if(t.length==5) {
@@ -414,7 +414,7 @@ function evlTree(t,a) {
 
 // Array -> Boolean
 // Takes an array, the first element of which is a connective, and the rest of which
-// are evaluated trees of the formulas it connects, and returns the truth value 
+// are evaluated trees of the formulas it connects, and returns the truth value
 // associated with the connective
 function gtTv(arr) {
 	switch(arr[0]) {
@@ -502,7 +502,7 @@ function isU(s) {
 // String -> [String]
 // takes a string beginning with '(' and ending with ')', and determines if there is a
 // binary connective enclosed only by the outermost parentheses.  If so, returns an array
-// with the string to the left and the string to the right of the binary connective; 
+// with the string to the left and the string to the right of the binary connective;
 // otherwise returns an array of three undefined's.
 function gSub(s) {
 	var stk = [];
@@ -514,7 +514,7 @@ function gSub(s) {
 			stk.pop();
 		} else if(stk.length==1 && (l = isB(s.substring(i)))>0) {
 			return [s.substring(1,i),s.substring(i,i+l),s.substring(i+l,s.length-1)];
-		}	
+		}
 	}
 	return [undefined,undefined,undefined];
 }
